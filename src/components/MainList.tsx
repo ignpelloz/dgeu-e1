@@ -6,7 +6,8 @@ interface IHeaderState {
     colorParam: string;
     fontFamilyParam: string;
     fontSizeParam: string;
-    paddingLeftParam: string
+    paddingLeftParam: string;
+    numberOfItemsParam: string
 }
 
 export enum CustomizableListFields{
@@ -15,7 +16,8 @@ export enum CustomizableListFields{
     enum_colorParam = "enum_colorParam",
     enum_fontFamilyParam = "enum_fontFamilyParam",
     enum_fontSizeParam = "enum_fontSizeParam",
-    enum_paddingLeftParam = "enum_paddingLeftParam"
+    enum_paddingLeftParam = "enum_paddingLeftParam",
+    enum_numberOfItemsParam = "enum_numberOfItemsParam"
 }
 
 class MainList extends React.Component<{}, IHeaderState> {
@@ -24,11 +26,12 @@ class MainList extends React.Component<{}, IHeaderState> {
         super(props);
         this.state = {
             listStyleTypeParam: "disc", //square, circle
-            lineHeightParam: "70%",
+            lineHeightParam: "50px",
             colorParam: "blue",
             fontFamilyParam: "Arial", // Fantasy, Cursive, monospace
             fontSizeParam: "20px",
-            paddingLeftParam: "30px"
+            paddingLeftParam: "30px",
+            numberOfItemsParam: "4"
         };
     }
 
@@ -36,47 +39,69 @@ class MainList extends React.Component<{}, IHeaderState> {
                      updatedField: CustomizableListFields, 
                      stateValue: string, 
                      event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>){
+                    /*
+                    Si la propiedad actual es la modificada, la actualiza con el evento. En otro caso, mantiene el valor que tiene en el estado.
+                    */
         if (currentProperty === updatedField){
+            if (currentProperty === CustomizableListFields.enum_lineHeightParam || 
+                currentProperty === CustomizableListFields.enum_paddingLeftParam ||
+                currentProperty === CustomizableListFields.enum_fontSizeParam){
+                return event.target.value + "px"    
+            }
             return event.target.value
         }
         return stateValue
     }
 
-    public setField = (event:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>, updatedField: CustomizableListFields) => {
+    public setField = (event:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>, 
+                       updatedField: CustomizableListFields) => {
+        /*
+        Modifica en el estado una de las 6 propiedades haciendo uso de updateVar.            
+        */
         let newState = {
                     listStyleTypeParam: this.updateVar(CustomizableListFields.enum_listStyleTypeParam, updatedField, this.state.listStyleTypeParam, event),
                     lineHeightParam: this.updateVar(CustomizableListFields.enum_lineHeightParam,updatedField, this.state.lineHeightParam, event),
                     colorParam: this.updateVar(CustomizableListFields.enum_colorParam, updatedField, this.state.colorParam, event),
                     fontFamilyParam: this.updateVar(CustomizableListFields.enum_fontFamilyParam, updatedField, this.state.fontFamilyParam, event),
                     fontSizeParam: this.updateVar(CustomizableListFields.enum_fontSizeParam, updatedField, this.state.fontSizeParam, event),
-                    paddingLeftParam: this.updateVar(CustomizableListFields.enum_paddingLeftParam, updatedField, this.state.paddingLeftParam, event)
+                    paddingLeftParam: this.updateVar(CustomizableListFields.enum_paddingLeftParam, updatedField, this.state.paddingLeftParam, event),
+                    numberOfItemsParam: this.updateVar(CustomizableListFields.enum_numberOfItemsParam, updatedField, this.state.numberOfItemsParam, event),
         }
         this.setState(newState);
+    }
+
+    public itemizedList(){
+        let res: string = ""
+        for (let i = 0; i < Number(this.state.numberOfItemsParam); i++) {
+            res += `<li>Item ${i+1}</li>`;
+        }
+        return res
     }
     
     public render(){
         return (<div > <h2>Customizable List</h2>
 
-                <div >
-                    <label>Items Separation</label>
+                    <div><label>Number of Items </label>
+                    <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_numberOfItemsParam)} /></div>
+
+                    <div><label>Items Separation </label>
                     <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
                         e, 
                         CustomizableListFields.enum_lineHeightParam)} /></div>
 
-                    <div >
-                    <label>Padding Left</label>
+                    <div><label>Padding Left </label>
                     <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
                         e, 
                         CustomizableListFields.enum_paddingLeftParam)} /></div>
 
-                    <div >
-                    <label>Size</label>
+                    <div><label>Size </label>
                     <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
                         e, 
                         CustomizableListFields.enum_fontSizeParam)} /></div>
 
-                    <div >
-                    <label>Color</label>
+                    <div><label>Color </label>
                     <select value={this.state.colorParam} onChange={e => this.setField(
                         e, 
                         CustomizableListFields.enum_colorParam)} >
@@ -86,8 +111,7 @@ class MainList extends React.Component<{}, IHeaderState> {
                         <option value="Blue">Blue</option>
                     </select></div>
 
-                    <div >
-                    <label>Font </label>
+                    <div><label>Font </label>
                     <select value={this.state.fontFamilyParam} onChange={e => this.setField(
                         e, 
                         CustomizableListFields.enum_fontFamilyParam)} >
@@ -97,8 +121,7 @@ class MainList extends React.Component<{}, IHeaderState> {
                         <option value="monospace">Monospace</option>
                     </select></div>
 
-                    <div >
-                    <label>Bullet </label>
+                    <div><label>Bullet Type </label>
                     <select value={this.state.listStyleTypeParam} onChange={e => this.setField(
                         e, 
                         CustomizableListFields.enum_listStyleTypeParam)} >
@@ -118,11 +141,10 @@ class MainList extends React.Component<{}, IHeaderState> {
                         fontSize: this.state.fontSizeParam,
                         paddingLeft: this.state.paddingLeftParam
                         }
-                    }>
-                <li>Item 1</li>
-                <li>Item 2</li>
-                <li>Item 3</li>
-                <li>Item 4</li>
+                    }> 
+                    <div dangerouslySetInnerHTML={{ 
+                        __html: this.itemizedList() 
+                    }}></div>
               </ul>
               </div>
         );
