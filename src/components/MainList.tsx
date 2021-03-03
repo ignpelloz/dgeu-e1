@@ -1,15 +1,21 @@
 import * as React from 'react';
-import SearchText from './SearchText';
-
 
 interface IHeaderState {
-    collapsed: boolean; 
-    searchText: string;
     listStyleTypeParam: string; 
     lineHeightParam: string;
     colorParam: string;
     fontFamilyParam: string;
     fontSizeParam: string;
+    paddingLeftParam: string
+}
+
+export enum CustomizableListFields{
+    enum_listStyleTypeParam = "enum_listStyleTypeParam",
+    enum_lineHeightParam = "enum_lineHeightParam",
+    enum_colorParam = "enum_colorParam",
+    enum_fontFamilyParam = "enum_fontFamilyParam",
+    enum_fontSizeParam = "enum_fontSizeParam",
+    enum_paddingLeftParam = "enum_paddingLeftParam"
 }
 
 class MainList extends React.Component<{}, IHeaderState> {
@@ -17,92 +23,113 @@ class MainList extends React.Component<{}, IHeaderState> {
     constructor (props: {}){
         super(props);
         this.state = {
-            collapsed: true, 
-            searchText: "",
             listStyleTypeParam: "disc", //square, circle
             lineHeightParam: "70%",
             colorParam: "blue",
             fontFamilyParam: "Arial", // Fantasy, Cursive, monospace
-            fontSizeParam: "20px"
+            fontSizeParam: "20px",
+            paddingLeftParam: "30px"
         };
     }
 
-    public onFilterClick = () => {
-        this.setState({collapsed: !!!this.state.collapsed});
+    public setLineHeightParam = (event:React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            listStyleTypeParam: this.state.listStyleTypeParam,
+            lineHeightParam: event.target.value + "%",
+            colorParam: this.state.colorParam,
+            fontFamilyParam: this.state.fontFamilyParam,
+            fontSizeParam: this.state.fontSizeParam,
+            paddingLeftParam: this.state.paddingLeftParam
+        });
     }
-    
-    public onSearchTextChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({searchText: event.target.value});
+        
+    public setFontSizeParam = (event:React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            listStyleTypeParam: this.state.listStyleTypeParam,
+            lineHeightParam: this.state.lineHeightParam,
+            colorParam: this.state.colorParam, 
+            fontFamilyParam: this.state.fontFamilyParam, 
+            fontSizeParam: event.target.value + "px",
+            paddingLeftParam: this.state.paddingLeftParam
+        });
     }
 
-    public setBulletType = (event:React.ChangeEvent<HTMLInputElement>) => {
+    public setBulletType = (event:React.ChangeEvent<HTMLSelectElement>) => {
         this.setState({
             listStyleTypeParam: event.target.value,
             lineHeightParam: this.state.lineHeightParam,
             colorParam: this.state.colorParam,
             fontFamilyParam: this.state.fontFamilyParam,
-            fontSizeParam: this.state.fontSizeParam
+            fontSizeParam: this.state.fontSizeParam,
+            paddingLeftParam: this.state.paddingLeftParam
         });
     }
+    public setFontFamilyParam = (event:React.ChangeEvent<HTMLSelectElement>) => {
+        this.setState({
+            listStyleTypeParam: this.state.listStyleTypeParam,
+            lineHeightParam: this.state.lineHeightParam,
+            colorParam: this.state.colorParam,
+            fontFamilyParam: event.target.value,
+            fontSizeParam: this.state.fontSizeParam,
+            paddingLeftParam: this.state.paddingLeftParam
+        });
+    }
+    public setColorParam = (event:React.ChangeEvent<HTMLSelectElement>) => {
+        this.setState({
+            listStyleTypeParam: this.state.listStyleTypeParam,
+            lineHeightParam: this.state.lineHeightParam,
+            colorParam: event.target.value,
+            fontFamilyParam: this.state.fontFamilyParam, 
+            fontSizeParam: this.state.fontSizeParam,
+            paddingLeftParam: this.state.paddingLeftParam
+        });
+    }
+    public setPaddingLeftParam = (event:React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            listStyleTypeParam: this.state.listStyleTypeParam,
+            lineHeightParam: this.state.lineHeightParam,
+            colorParam: this.state.colorParam,
+            fontFamilyParam: this.state.fontFamilyParam, 
+            fontSizeParam: this.state.fontSizeParam,
+            paddingLeftParam: String(30 + Number(event.target.value)) + "px"
+        });
+    }
+        
 
     public render(){
-        const listStyleTypeParam = "disc"; //square, circle
-        const lineHeightParam = "30%";
-        const colorParam = "blue";
-        const fontFamilyParam = "Arial"; // Fantasy, Cursive, monospace
-        const fontSizeParam = "80px";
-        return (<div>
+        return (<div >
             
-                <h2>Customizable List!</h2>
+                <h2>Customizable List</h2>
 
-                {!!!this.state.collapsed ?
-                        <div >
-                            <SearchText onSearchTextChange={this.onSearchTextChange}/>
-                        </div>
-                    : null}
-
-                    <div >
-                    <label>Example</label>
-                        <SearchText onSearchTextChange={this.onSearchTextChange}/>
+                <div >
+                    <label>Items Separation</label>
+                    <input type="number" placeholder="Enter a number..." step="20" onChange={this.setLineHeightParam} /> 
                     </div>
 
-                    <br></br>
-
                     <div >
-                    <label>Items Separation</label>
-                    <select name="cars" id="cars">
-                        <option value="30%">30%</option>
-                        <option value="70%">70%</option>
-                        <option value="110%">110%</option>
-                        <option value="180%">180%</option>
-                    </select>
+                    <label>Padding Left</label>
+                    <input type="number" placeholder="Enter a number..." step="10" onChange={this.setPaddingLeftParam} /> 
                     </div>
 
                     <div >
                     <label>Size</label>
-                    <select name="cars" id="cars">
-                        <option value="10px">10px</option>
-                        <option value="20px">20px</option>
-                        <option value="40px">40px</option>
-                        <option value="80px">80px</option>
-                    </select>
+                    <input type="number" placeholder="Enter a number..." onChange={this.setFontSizeParam} />
                     </div>
 
                     <div >
                     <label>Color</label>
-                    <select name="cars" id="cars">
+                    <select value={this.state.colorParam} onChange={this.setColorParam} >
                         <option value="Black">Black</option>
                         <option value="Green">Green</option>
                         <option value="Pink">Pink</option>
                         <option value="Blue">Blue</option>
-                        <option value="Red">Red</option>
                     </select>
                     </div>
 
 
                     <div >
                     <label>Font </label>
-                    <select name="cars" id="cars">
+                    <select value={this.state.fontFamilyParam} onChange={this.setFontFamilyParam} >
                         <option value="Arial">Arial</option>
                         <option value="Fantasy">Fantasy</option>
                         <option value="Cursive">Cursive</option>
@@ -112,28 +139,15 @@ class MainList extends React.Component<{}, IHeaderState> {
 
 
                     <div >
-                    <label>Bullet OG</label>
-                    <select name="cars" id="cars">
-                        <option value="disc">disc</option>
-                        <option value="square">square</option>
-                        <option value="circle">circle</option>
-                    </select>
-                    </div>
-
-                    <div >
                     <label>Bullet </label>
-                    <select name="cars" id="cars">
+                    <select value={this.state.listStyleTypeParam} onChange={this.setBulletType} >
                         <option value="disc">disc</option>
                         <option value="square">square</option>
                         <option value="circle">circle</option>
                     </select>
-
-                    <input type="text" name="searchText" placeholder="Buscar" onChange={this.setBulletType} /> //WORKS!
-
-                    </div>
-
                     
-            
+                    </div>
+                              
                 <br></br>
 
                 <ul style={
@@ -142,7 +156,8 @@ class MainList extends React.Component<{}, IHeaderState> {
                         lineHeight:this.state.lineHeightParam,
                         color: this.state.colorParam,
                         fontFamily: this.state.fontFamilyParam,
-                        fontSize: this.state.fontSizeParam
+                        fontSize: this.state.fontSizeParam,
+                        paddingLeft: this.state.paddingLeftParam
                         }
                     }>
                 <li>Item 1</li>
@@ -156,5 +171,3 @@ class MainList extends React.Component<{}, IHeaderState> {
 }
 
 export default MainList;
-
-
