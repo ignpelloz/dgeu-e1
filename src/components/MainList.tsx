@@ -32,121 +32,80 @@ class MainList extends React.Component<{}, IHeaderState> {
         };
     }
 
-    public setLineHeightParam = (event:React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            listStyleTypeParam: this.state.listStyleTypeParam,
-            lineHeightParam: event.target.value + "%",
-            colorParam: this.state.colorParam,
-            fontFamilyParam: this.state.fontFamilyParam,
-            fontSizeParam: this.state.fontSizeParam,
-            paddingLeftParam: this.state.paddingLeftParam
-        });
-    }
-        
-    public setFontSizeParam = (event:React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            listStyleTypeParam: this.state.listStyleTypeParam,
-            lineHeightParam: this.state.lineHeightParam,
-            colorParam: this.state.colorParam, 
-            fontFamilyParam: this.state.fontFamilyParam, 
-            fontSizeParam: event.target.value + "px",
-            paddingLeftParam: this.state.paddingLeftParam
-        });
+    public updateVar(currentProperty: CustomizableListFields, 
+                     updatedField: CustomizableListFields, 
+                     stateValue: string, 
+                     event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>){
+        if (currentProperty === updatedField){
+            return event.target.value
+        }
+        return stateValue
     }
 
-    public setBulletType = (event:React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({
-            listStyleTypeParam: event.target.value,
-            lineHeightParam: this.state.lineHeightParam,
-            colorParam: this.state.colorParam,
-            fontFamilyParam: this.state.fontFamilyParam,
-            fontSizeParam: this.state.fontSizeParam,
-            paddingLeftParam: this.state.paddingLeftParam
-        });
+    public setField = (event:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>, updatedField: CustomizableListFields) => {
+        let newState = {
+                    listStyleTypeParam: this.updateVar(CustomizableListFields.enum_listStyleTypeParam, updatedField, this.state.listStyleTypeParam, event),
+                    lineHeightParam: this.updateVar(CustomizableListFields.enum_lineHeightParam,updatedField, this.state.lineHeightParam, event),
+                    colorParam: this.updateVar(CustomizableListFields.enum_colorParam, updatedField, this.state.colorParam, event),
+                    fontFamilyParam: this.updateVar(CustomizableListFields.enum_fontFamilyParam, updatedField, this.state.fontFamilyParam, event),
+                    fontSizeParam: this.updateVar(CustomizableListFields.enum_fontSizeParam, updatedField, this.state.fontSizeParam, event),
+                    paddingLeftParam: this.updateVar(CustomizableListFields.enum_paddingLeftParam, updatedField, this.state.paddingLeftParam, event)
+        }
+        this.setState(newState);
     }
-    public setFontFamilyParam = (event:React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({
-            listStyleTypeParam: this.state.listStyleTypeParam,
-            lineHeightParam: this.state.lineHeightParam,
-            colorParam: this.state.colorParam,
-            fontFamilyParam: event.target.value,
-            fontSizeParam: this.state.fontSizeParam,
-            paddingLeftParam: this.state.paddingLeftParam
-        });
-    }
-    public setColorParam = (event:React.ChangeEvent<HTMLSelectElement>) => {
-        this.setState({
-            listStyleTypeParam: this.state.listStyleTypeParam,
-            lineHeightParam: this.state.lineHeightParam,
-            colorParam: event.target.value,
-            fontFamilyParam: this.state.fontFamilyParam, 
-            fontSizeParam: this.state.fontSizeParam,
-            paddingLeftParam: this.state.paddingLeftParam
-        });
-    }
-    public setPaddingLeftParam = (event:React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            listStyleTypeParam: this.state.listStyleTypeParam,
-            lineHeightParam: this.state.lineHeightParam,
-            colorParam: this.state.colorParam,
-            fontFamilyParam: this.state.fontFamilyParam, 
-            fontSizeParam: this.state.fontSizeParam,
-            paddingLeftParam: String(30 + Number(event.target.value)) + "px"
-        });
-    }
-        
-
+    
     public render(){
-        return (<div >
-            
-                <h2>Customizable List</h2>
+        return (<div > <h2>Customizable List</h2>
 
                 <div >
                     <label>Items Separation</label>
-                    <input type="number" placeholder="Enter a number..." step="20" onChange={this.setLineHeightParam} /> 
-                    </div>
+                    <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_lineHeightParam)} /></div>
 
                     <div >
                     <label>Padding Left</label>
-                    <input type="number" placeholder="Enter a number..." step="10" onChange={this.setPaddingLeftParam} /> 
-                    </div>
+                    <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_paddingLeftParam)} /></div>
 
                     <div >
                     <label>Size</label>
-                    <input type="number" placeholder="Enter a number..." onChange={this.setFontSizeParam} />
-                    </div>
+                    <input type="number" placeholder="Enter a number..." onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_fontSizeParam)} /></div>
 
                     <div >
                     <label>Color</label>
-                    <select value={this.state.colorParam} onChange={this.setColorParam} >
+                    <select value={this.state.colorParam} onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_colorParam)} >
                         <option value="Black">Black</option>
                         <option value="Green">Green</option>
                         <option value="Pink">Pink</option>
                         <option value="Blue">Blue</option>
-                    </select>
-                    </div>
-
+                    </select></div>
 
                     <div >
                     <label>Font </label>
-                    <select value={this.state.fontFamilyParam} onChange={this.setFontFamilyParam} >
+                    <select value={this.state.fontFamilyParam} onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_fontFamilyParam)} >
                         <option value="Arial">Arial</option>
                         <option value="Fantasy">Fantasy</option>
                         <option value="Cursive">Cursive</option>
                         <option value="monospace">Monospace</option>
-                    </select>
-                    </div>
-
+                    </select></div>
 
                     <div >
                     <label>Bullet </label>
-                    <select value={this.state.listStyleTypeParam} onChange={this.setBulletType} >
+                    <select value={this.state.listStyleTypeParam} onChange={e => this.setField(
+                        e, 
+                        CustomizableListFields.enum_listStyleTypeParam)} >
                         <option value="disc">disc</option>
                         <option value="square">square</option>
                         <option value="circle">circle</option>
-                    </select>
-                    
-                    </div>
+                    </select></div>
                               
                 <br></br>
 
